@@ -22,6 +22,7 @@
 
         <!-- Versions -->
         <com.spotify.dockerfile-maven.version>1.4.10</com.spotify.dockerfile-maven.version>
+        <org.springframework.cloud.version>Greenwich.SR2</org.springframework.cloud.version>
 
         <!-- Bootstrap class -->
         <bootstrapClass>ar.edu.itba.cep.api_gateway.Application</bootstrapClass>
@@ -31,6 +32,14 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-gateway</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
         </dependency>
 
         <!-- Testing -->
@@ -56,6 +65,18 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>${org.springframework.cloud.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <profiles>
         <profile>
