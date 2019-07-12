@@ -21,7 +21,7 @@ public class RoutesConfig {
     public RouteLocator routes(final RouteLocatorBuilder builder) {
         return builder.routes()
                 .route(
-                        "executor-service",
+                        "playground-service",
                         r -> r
                                 .path("/execution-requests/**")
                                 .uri("lb://playground-service")
