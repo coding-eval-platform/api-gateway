@@ -37,6 +37,12 @@ public class RoutesConfig {
                                 .and()
                                 .uri("lb://evaluations-service")
                 )
+                .route(
+                        "users-service",
+                        r -> r
+                                .path("/users/**")
+                                .uri("lb://users-service")
+                )
                 .build();
     }
 }
