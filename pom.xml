@@ -115,9 +115,9 @@
                 <maven.build.timestamp.format>yyyy-MM-dd'T'HH-mm-ss</maven.build.timestamp.format>
                 <!-- Docker Image name -->
                 <docker.image.prefix>itbacep</docker.image.prefix>
-                <docker.image.name>${project.parent.artifactId}</docker.image.name>
+                <docker.image.name>${project.artifactId}</docker.image.name>
                 <docker.image.tag-id>${maven.build.timestamp}</docker.image.tag-id>
-                <docker.image.tag>${project.parent.version}-${docker.image.tag-id}</docker.image.tag>
+                <docker.image.tag>${project.version}-${docker.image.tag-id}</docker.image.tag>
             </properties>
             <build>
                 <plugins>
