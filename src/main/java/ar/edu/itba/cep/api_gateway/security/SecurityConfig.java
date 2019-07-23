@@ -12,6 +12,9 @@ import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
+import java.security.KeyFactory;
+import java.security.NoSuchAlgorithmException;
+
 import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
@@ -70,5 +73,16 @@ public class SecurityConfig {
                     return response.setComplete();
                 }
         );
+    }
+
+    /**
+     * Creates a bean of a {@link KeyFactory}.
+     *
+     * @return A {@link KeyFactory} bean.
+     * @throws NoSuchAlgorithmException Never.
+     */
+    @Bean
+    public KeyFactory rsaKeyFactory() throws NoSuchAlgorithmException {
+        return KeyFactory.getInstance("RSA");
     }
 }

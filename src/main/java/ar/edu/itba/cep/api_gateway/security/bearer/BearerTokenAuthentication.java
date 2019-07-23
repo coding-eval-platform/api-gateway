@@ -45,12 +45,10 @@ public class BearerTokenAuthentication extends AbstractAuthenticationToken {
     /**
      * Authenticates this token. This is a convenient method for {@code setAuthenticated(true)}.
      *
-     * @return {@code this} (for method chaining).
      * @see org.springframework.security.core.Authentication#setAuthenticated(boolean)
      */
-    /* package */ BearerTokenAuthentication authenticate() {
+    /* package */ void authenticate() {
         this.setAuthenticated(true);
-        return this;
     }
 
     /**
@@ -58,6 +56,15 @@ public class BearerTokenAuthentication extends AbstractAuthenticationToken {
      */
     public UUID getTokenId() {
         return tokenId;
+    }
+
+    /**
+     * A convenient method to obtain the username.
+     *
+     * @return The username.
+     */
+    public String getUsername() {
+        return username;
     }
 
     @Override

@@ -1,7 +1,7 @@
 package ar.edu.itba.cep.api_gateway.security.bearer;
 
 /**
- * Class containing constants to be used by the security module.
+ * Class containing constants to be used by the bearer module.
  */
 /* package */ class Constants {
 

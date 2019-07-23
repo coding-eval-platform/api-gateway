@@ -1,6 +1,7 @@
 package ar.edu.itba.cep.api_gateway.security.bearer;
 
 import ar.edu.itba.cep.api_gateway.security.AnonymousAccess;
+import ar.edu.itba.cep.api_gateway.services.InvalidatedBearerTokenChecker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.ReactiveAuthenticationManager;
 import org.springframework.security.core.Authentication;
@@ -20,16 +21,27 @@ public class BearerTokenAuthenticationManager implements ReactiveAuthenticationM
      * The {@link TokenDecoder} used to create a {@link BearerTokenAuthentication} from a raw token.
      */
     private final TokenDecoder tokenDecoder;
+    /**
+     * The {@link InvalidatedBearerTokenChecker} used to check whether a token is blacklisted
+     * or it can be used to authenticate a request.
+     */
+    private final InvalidatedBearerTokenChecker blacklistedChecker;
 
 
     /**
      * Constructor.
      *
-     * @param tokenDecoder The {@link TokenDecoder} used to create a {@link BearerTokenAuthentication} from a raw token.
+     * @param tokenDecoder       The {@link TokenDecoder} used to create a {@link BearerTokenAuthentication}
+     *                           from a raw token.
+     * @param blacklistedChecker The {@link InvalidatedBearerTokenChecker} used to check whether a token is blacklisted
+     *                           or it can be used to authenticate a request.
      */
     @Autowired
-    public BearerTokenAuthenticationManager(final TokenDecoder tokenDecoder) {
+    public BearerTokenAuthenticationManager(
+            final TokenDecoder tokenDecoder,
+            final InvalidatedBearerTokenChecker blacklistedChecker) {
         this.tokenDecoder = tokenDecoder;
+        this.blacklistedChecker = blacklistedChecker;
     }
 
 
@@ -40,18 +52,29 @@ public class BearerTokenAuthenticationManager implements ReactiveAuthenticationM
             final var preAuthenticatedAuthenticationToken = (PreAuthenticatedBearerToken) authentication;
             final var rawToken = preAuthenticatedAuthenticationToken.getRawToken();
             return tokenDecoder.decode(rawToken)
-                    // TODO: check blacklisted
-                    .switchIfEmpty(
-                            Mono.defer(
-                                    () -> Mono.error(
-                                            new BearerTokenAuthenticationException("Token could not be decoded")
-                                    )
-                            )
-                    )
+                    .switchIfEmpty(DECODING_ERROR)
+                    .filterWhen(token -> blacklistedChecker.isInvalid(token.getTokenId()).map(flag -> !flag))
+                    .switchIfEmpty(BLACKLISTED_ERROR)
+                    .doOnNext(BearerTokenAuthentication::authenticate)
                     .cast(Authentication.class)
                     ;
         }
-
         return Mono.justOrEmpty(authentication).defaultIfEmpty(AnonymousAccess.getInstance());
     }
+
+
+    /**
+     * A {@link Mono} of {@link BearerTokenAuthentication}
+     * with an error to indicate that a raw token could not be decoded into a {@link BearerTokenAuthentication}.
+     */
+    private static Mono<? extends BearerTokenAuthentication> DECODING_ERROR =
+            Mono.defer(() -> Mono.error(new BearerTokenAuthenticationException("Token could not be decoded")));
+
+    /**
+     * A {@link Mono} of {@link BearerTokenAuthentication}
+     * with an error to indicate that a {@link BearerTokenAuthentication} was invalidated.
+     */
+    private static Mono<? extends BearerTokenAuthentication> BLACKLISTED_ERROR =
+            Mono.defer(() -> Mono.error(new BearerTokenAuthenticationException("Blacklisted token")));
+
 }
