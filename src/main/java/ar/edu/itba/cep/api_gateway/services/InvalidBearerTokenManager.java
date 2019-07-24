@@ -9,11 +9,16 @@ import java.util.UUID;
  * A manager in charge of keeping record of invalidated bearer tokens.
  */
 @Component
-public class InvalidBearerTokenManager implements InvalidatedBearerTokenChecker {
+public class InvalidBearerTokenManager implements InvalidatedBearerTokenChecker, BearerTokenInvalidator {
 
     @Override
     public Mono<Boolean> isInvalid(final UUID tokenId) {
         // TODO: implement
         return Mono.just(false);
+    }
+
+    @Override
+    public void invalidateToken(final UUID tokenId) {
+        // TODO: implement
     }
 }
