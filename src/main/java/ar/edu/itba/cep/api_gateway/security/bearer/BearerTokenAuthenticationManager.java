@@ -22,26 +22,26 @@ public class BearerTokenAuthenticationManager implements ReactiveAuthenticationM
      */
     private final TokenDecoder tokenDecoder;
     /**
-     * The {@link InvalidatedBearerTokenChecker} used to check whether a token is blacklisted
+     * The {@link InvalidatedBearerTokenChecker} used to check whether a token is invalid
      * or it can be used to authenticate a request.
      */
-    private final InvalidatedBearerTokenChecker blacklistedChecker;
+    private final InvalidatedBearerTokenChecker invalidTokenChecker;
 
 
     /**
      * Constructor.
      *
-     * @param tokenDecoder       The {@link TokenDecoder} used to create a {@link BearerTokenAuthentication}
-     *                           from a raw token.
-     * @param blacklistedChecker The {@link InvalidatedBearerTokenChecker} used to check whether a token is blacklisted
-     *                           or it can be used to authenticate a request.
+     * @param tokenDecoder        The {@link TokenDecoder} used to create a {@link BearerTokenAuthentication}
+     *                            from a raw token.
+     * @param invalidTokenChecker The {@link InvalidatedBearerTokenChecker} used to check whether a token is invalid
+     *                            or it can be used to authenticate a request.
      */
     @Autowired
     public BearerTokenAuthenticationManager(
             final TokenDecoder tokenDecoder,
-            final InvalidatedBearerTokenChecker blacklistedChecker) {
+            final InvalidatedBearerTokenChecker invalidTokenChecker) {
         this.tokenDecoder = tokenDecoder;
-        this.blacklistedChecker = blacklistedChecker;
+        this.invalidTokenChecker = invalidTokenChecker;
     }
 
 
@@ -53,7 +53,7 @@ public class BearerTokenAuthenticationManager implements ReactiveAuthenticationM
             final var rawToken = preAuthenticatedAuthenticationToken.getRawToken();
             return tokenDecoder.decode(rawToken)
                     .switchIfEmpty(DECODING_ERROR)
-                    .filterWhen(token -> blacklistedChecker.isInvalid(token.getTokenId()).map(flag -> !flag))
+                    .filterWhen(token -> invalidTokenChecker.isInvalid(token.getTokenId()).map(flag -> !flag))
                     .switchIfEmpty(BLACKLISTED_ERROR)
                     .doOnNext(BearerTokenAuthentication::authenticate)
                     .cast(Authentication.class)
