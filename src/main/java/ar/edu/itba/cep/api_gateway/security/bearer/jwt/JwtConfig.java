@@ -72,7 +72,7 @@ public class JwtConfig {
     /**
      * Creates a {@link PrivateKey} from the {@link KeyFactory} and the {@link JwtProperties}.
      *
-     * @return The {@link PublicKey}.
+     * @return The {@link PrivateKey}.
      */
     @Bean
     public PrivateKey privateKey() {

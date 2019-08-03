@@ -40,17 +40,21 @@ public class SecurityConfig {
             final BearerTokenAuthenticationWebFilter bearerTokenAuthenticationWebFilter) {
 
         return http
-                .csrf().disable()
-                .cors().disable()
-                .formLogin().disable()
-                .httpBasic().disable()
-                .logout().disable()
+                .csrf()
+                    .disable()
+                .cors()
+                    .disable()
+                .formLogin()
+                    .disable()
+                .httpBasic()
+                    .disable()
+                .logout()
+                    .disable()
 
                 .addFilterAt(bearerTokenAuthenticationWebFilter, SecurityWebFiltersOrder.AUTHENTICATION)
-
                 .exceptionHandling()
-                .authenticationEntryPoint((exchange, ignored) -> completeWithStatusCode(exchange, UNAUTHORIZED))
-                .accessDeniedHandler((exchange, ignored) -> completeWithStatusCode(exchange, FORBIDDEN))
+                    .authenticationEntryPoint((exchange, ignored) -> completeWithStatusCode(exchange, UNAUTHORIZED))
+                    .accessDeniedHandler((exchange, ignored) -> completeWithStatusCode(exchange, FORBIDDEN))
                 .and()
 
                 .build()

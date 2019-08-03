@@ -11,7 +11,7 @@ import org.springframework.boot.context.properties.NestedConfigurationProperty;
 @Getter
 @Setter
 @ConfigurationProperties(prefix = "authentication.jwt")
-/* package */  class JwtProperties {
+/* package */ class JwtProperties {
 
     /**
      * The internal tokens properties.

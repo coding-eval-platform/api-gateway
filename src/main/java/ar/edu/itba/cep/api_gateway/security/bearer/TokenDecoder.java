@@ -8,7 +8,7 @@ import reactor.core.publisher.Mono;
 public interface TokenDecoder {
 
     /**
-     * decodes the given {@code rawToken}.
+     * Decodes the given {@code rawToken}.
      *
      * @param rawToken The raw token to be decoded.
      * @return A {@link Mono} of {@link BearerTokenAuthentication} if the token can be decoded, or empty otherwise.
