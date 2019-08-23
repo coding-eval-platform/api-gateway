@@ -42,6 +42,8 @@ public class RoutesConfig {
                         r -> r
                                 .path("/users/**")
                                 .or()
+                                .path("/actual-user/**")
+                                .or()
                                 .path("/tokens/**")
                                 .and()
                                 .uri("lb://users-service")
