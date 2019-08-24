@@ -8,7 +8,6 @@ import org.springframework.web.cors.reactive.DefaultCorsProcessor;
 import org.springframework.web.server.ServerWebExchange;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
@@ -57,9 +56,6 @@ public class CustomCorsProcessor extends DefaultCorsProcessor {
                                 if (isPreFlightRequest && !allowHeaders.isEmpty()) {
                                     responseHeaders.setAccessControlAllowHeaders(allowHeaders);
                                 }
-                                final List<String> exposedHeaders = new LinkedList<>(allowHeaders);
-                                Optional.ofNullable(config.getExposedHeaders()).ifPresent(exposedHeaders::addAll);
-                                responseHeaders.setAccessControlExposeHeaders(exposedHeaders);
                             },
                             CustomCorsProcessor::handleRequestRejected
                     );
@@ -68,6 +64,9 @@ public class CustomCorsProcessor extends DefaultCorsProcessor {
             Optional.ofNullable(config.getMaxAge())
                     .filter(ignored -> isPreFlightRequest)
                     .ifPresent(responseHeaders::setAccessControlMaxAge);
+            Optional.ofNullable(config.getExposedHeaders())
+                    .filter(exposedHeaders -> !exposedHeaders.isEmpty())
+                    .ifPresent(responseHeaders::setAccessControlExposeHeaders);
 
         } catch (final RequestRejectedException e) {
             rejectRequest(exchange.getResponse());
