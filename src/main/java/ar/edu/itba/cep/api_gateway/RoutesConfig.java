@@ -52,6 +52,13 @@ public class RoutesConfig {
                                 .and()
                                 .uri("lb://users-service")
                 )
+                .route(
+                        "lti-service",
+                        r -> r
+                                .path("/lti/admin/**")
+                                .and()
+                                .uri("lb://lti-service")
+                )
                 .build();
     }
 }
