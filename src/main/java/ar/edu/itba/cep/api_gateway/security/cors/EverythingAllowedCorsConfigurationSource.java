@@ -1,5 +1,6 @@
 package ar.edu.itba.cep.api_gateway.security.cors;
 
+import ar.edu.itba.cep.api_gateway.tracing.RequestIdFilter;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
@@ -69,7 +70,9 @@ public class EverythingAllowedCorsConfigurationSource implements CorsConfigurati
                 CONTENT_TYPE_OPTIONS,
                 FRAME_OPTIONS,
                 STRICT_TRANSPORT_SECURITY,
-                XSS_PROTECTION
+                XSS_PROTECTION,
+
+                RequestIdFilter.REQUEST_ID_HEADER
 
         ));
     }
